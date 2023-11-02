@@ -64,12 +64,24 @@ def get_size(file):
 
 
 def read_file(file, arg):
+
     for x, y in DIRECTORY:
         if x == file.upper():
             # print(str(y).split(",")[0], " + ", str(y).split(",")[1])
-            for z in range(int(str(y).split(",")[0]) - 1, int(str(y).split(",")[1])):
-                print(FILESYSTEM[z])
-            break
+            if arg == "":
+                for z in range(int(str(y).split(",")[0]) - 1, int(str(y).split(",")[1])):
+                    print(FILESYSTEM[z])
+            else:
+                match arg.casefold():
+                    case '/m':
+                        print("Middle")
+                    case '/f':
+                        print("Front")
+                    case '/b':
+                        print("Back")
+
+            return
+    print("File Not Found Or Incorrect Parameters")
 
 
 def menu():
@@ -102,14 +114,14 @@ def menu():
 
             case "read":
                 try:
-                    read_file(choice.split(" ")[1], choice.split(" ")[2])
+                    read_file(choice.split(" ")[2], choice.split(" ")[1])
 
                 except IndexError:
                     try:
-                        read_file(choice.split(" ")[1], " ")
-
+                        print(choice.split(" ")[2])
                     except IndexError:
-                        print(choice.split(" ")[0])
+                        read_file(choice.split(" ")[1], "")
+
 
             case "del":
                 try:
