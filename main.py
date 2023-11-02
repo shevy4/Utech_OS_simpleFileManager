@@ -67,18 +67,17 @@ def read_file(file, arg):
 
     for x, y in DIRECTORY:
         if x == file.upper():
-            # print(str(y).split(",")[0], " + ", str(y).split(",")[1])
             if arg == "":
                 for z in range(int(str(y).split(",")[0]) - 1, int(str(y).split(",")[1])):
                     print(FILESYSTEM[z])
             else:
                 match arg.casefold():
                     case '/m':
-                        print("Middle")
+                        print(FILESYSTEM[(int(str(y).split(",")[0]) - 1) + (((int(str(y).split(",")[1])) - ((int(str(y).split(",")[0])) - 1)) / 2).__floor__()])
                     case '/f':
-                        print("Front")
+                        print(FILESYSTEM[int(str(y).split(",")[0]) - 1])
                     case '/b':
-                        print("Back")
+                        print(FILESYSTEM[int(str(y).split(",")[1]) - 1])
 
             return
     print("File Not Found Or Incorrect Parameters")
