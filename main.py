@@ -84,7 +84,7 @@ def read_file(file, arg):
 
 
 def delete_block(file, arg):
-
+    count = 0
     if arg == "":
         print("File Not Found Or Incorrect Parameters")
         return
@@ -95,10 +95,14 @@ def delete_block(file, arg):
             for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1]) + 1):
                 print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
 
+            temp = str(DIRECTORY[count][1]).split(",")[0] + "," + str(int(str(DIRECTORY[count][1]).split(",")[1]) - 1)
+            DIRECTORY[count][1] = temp
+
             print("\nFile", file, "After : ", end="")
             match arg.casefold():
                 case '/m':
-                    temp = int(str(y).split(",")[0]) + (((int(str(y).split(", ")[0].split(",")[1])) - int(str(y).split(", ")[0].split(",")[0])) / 2).__ceil__()
+                    temp = int(str(y).split(",")[0]) + (((int(str(y).split(", ")[0].split(",")[1])) - int(
+                        str(y).split(", ")[0].split(",")[0])) / 2).__ceil__()
                     FILESYSTEM.pop(temp)
                     for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]))):
                         print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
@@ -111,18 +115,15 @@ def delete_block(file, arg):
 
                 case '/b':
                     FILESYSTEM.pop(int(str(y).split(",")[1]))
-                    temp = str(FILESYSTEM[int(str(y).split(",")[1]) - 1]).replace("[","").replace("'","").replace("]", "") + "."
+                    temp = str(FILESYSTEM[int(str(y).split(",")[1]) - 1]).replace("[", "").replace("'", "").replace("]",
+                                                                                                                    "") + "."
                     FILESYSTEM.pop(int(str(y).split(",")[1]) - 1)
                     FILESYSTEM.insert(int(str(y).split(",")[1]) - 1, [temp])
 
-                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]) )):
+                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]))):
                         print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
                     print()
-
-
-
-
-
+        count += 1
 
 
 def menu():
