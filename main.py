@@ -21,7 +21,7 @@ def file_innit():
             FILESYSTEM.append([block])
             block = ""
 
-    DIRECTORY.append(["A", "1," + str(len(FILESYSTEM))])
+    DIRECTORY.append(["A", "0," + str(len(FILESYSTEM) - 1)])
 
     for x, y in enumerate(file_b_content, 1):
         block += y
@@ -32,7 +32,7 @@ def file_innit():
             FILESYSTEM.append([block])
             block = ""
 
-    DIRECTORY.append(["B", str(int(str(DIRECTORY[0][1]).split(",")[1]) + 1) + "," + str(len(FILESYSTEM))])
+    DIRECTORY.append(["B", str(int(str(DIRECTORY[0][1]).split(",")[1]) + 1) + "," + str(len(FILESYSTEM) - 1)])
 
     for x, y in enumerate(file_c_content, 1):
         block += y
@@ -43,7 +43,7 @@ def file_innit():
             FILESYSTEM.append([block])
             block = ""
 
-    DIRECTORY.append(["C", str(int(str(DIRECTORY[1][1]).split(",")[1]) + 1) + "," + str(len(FILESYSTEM))])
+    DIRECTORY.append(["C", str(int(str(DIRECTORY[1][1]).split(",")[1]) + 1) + "," + str(len(FILESYSTEM) - 1)])
 
 
 def get_size(file):
@@ -51,7 +51,7 @@ def get_size(file):
     for x, y in enumerate(DIRECTORY):
         if file == str(y[0]).casefold():
             blocks = int(str(y[1]).split(",")[1]) - (int(str(y[1]).split(",")[0])) + 1
-            for z in FILESYSTEM[int(str(y[1]).split(",")[0]) - 1:int(str(y[1]).split(",")[1])]:
+            for z in FILESYSTEM[int(str(y[1]).split(",")[0]):int(str(y[1]).split(",")[1]) + 1]:
                 for count2 in str(z):
                     if count2 != "[" and count2 != "]" and count2 != "'":
                         characters += 1
@@ -64,23 +64,65 @@ def get_size(file):
 
 
 def read_file(file, arg):
-
     for x, y in DIRECTORY:
         if x == file.upper():
             if arg == "":
-                for z in range(int(str(y).split(",")[0]) - 1, int(str(y).split(",")[1])):
+                for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1]) + 1):
                     print(FILESYSTEM[z])
             else:
                 match arg.casefold():
                     case '/m':
-                        print(FILESYSTEM[(int(str(y).split(",")[0]) - 1) + (((int(str(y).split(",")[1])) - ((int(str(y).split(",")[0])) - 1)) / 2).__floor__()])
+                        print(FILESYSTEM[(int(str(y).split(",")[0])) + (
+                                ((int(str(y).split(",")[1])) - ((int(str(y).split(",")[0])) - 1)) / 2).__floor__()])
                     case '/f':
-                        print(FILESYSTEM[int(str(y).split(",")[0]) - 1])
+                        print(FILESYSTEM[int(str(y).split(",")[0])])
                     case '/b':
-                        print(FILESYSTEM[int(str(y).split(",")[1]) - 1])
+                        print(FILESYSTEM[int(str(y).split(",")[1])])
 
             return
     print("File Not Found Or Incorrect Parameters")
+
+
+def delete_block(file, arg):
+
+    if arg == "":
+        print("File Not Found Or Incorrect Parameters")
+        return
+
+    for x, y in DIRECTORY:
+        if x == file.upper():
+            print("File", file, "before : ", end="")
+            for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1]) + 1):
+                print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
+
+            print("\nFile", file, "After : ", end="")
+            match arg.casefold():
+                case '/m':
+                    temp = int(str(y).split(",")[0]) + (((int(str(y).split(", ")[0].split(",")[1])) - int(str(y).split(", ")[0].split(",")[0])) / 2).__ceil__()
+                    FILESYSTEM.pop(temp)
+                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]))):
+                        print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
+                    print()
+                case '/f':
+                    FILESYSTEM.pop(int(str(y).split(",")[0]))
+                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]))):
+                        print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
+                    print()
+
+                case '/b':
+                    FILESYSTEM.pop(int(str(y).split(",")[1]))
+                    temp = str(FILESYSTEM[int(str(y).split(",")[1]) - 1]).replace("[","").replace("'","").replace("]", "") + "."
+                    FILESYSTEM.pop(int(str(y).split(",")[1]) - 1)
+                    FILESYSTEM.insert(int(str(y).split(",")[1]) - 1, [temp])
+
+                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]) )):
+                        print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
+                    print()
+
+
+
+
+
 
 
 def menu():
@@ -121,12 +163,14 @@ def menu():
                     except IndexError:
                         read_file(choice.split(" ")[1], "")
 
-
             case "del":
                 try:
-                    print(choice.split(" ")[1])
+                    delete_block(choice.split(" ")[2], choice.split(" ")[1])
                 except IndexError:
-                    print(choice.split(" ")[0])
+                    try:
+                        delete_block(choice.split(" ")[1], "")
+                    except IndexError:
+                        delete_block("", "")
 
             case "app":
                 try:
