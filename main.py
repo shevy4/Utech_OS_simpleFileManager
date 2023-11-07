@@ -84,6 +84,21 @@ def read_file(file, arg):
 
 
 def delete_block(file, arg):
+    # noinspection PyShadowingNames
+    def update_eof():
+        eof = []
+        temp = []
+        for x, y in enumerate(FILESYSTEM):
+            if str(y).count(".") == 1:
+                eof.append(x)
+                temp.append(x + 1)
+        temp.pop(len(temp) - 1)
+
+        DIRECTORY.clear()
+        DIRECTORY.append(["A", "0," + str(eof[0])])
+        DIRECTORY.append(["B", str(temp[0]) + "," + str(eof[1])])
+        DIRECTORY.append(["C", str(temp[1]) + "," + str(eof[2])])
+
     count = 0
     if arg == "":
         print("File Not Found Or Incorrect Parameters")
@@ -95,21 +110,21 @@ def delete_block(file, arg):
             for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1]) + 1):
                 print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
 
-            temp = str(DIRECTORY[count][1]).split(",")[0] + "," + str(int(str(DIRECTORY[count][1]).split(",")[1]) - 1)
-            DIRECTORY[count][1] = temp
-
             print("\nFile", file, "After : ", end="")
             match arg.casefold():
                 case '/m':
                     temp = int(str(y).split(",")[0]) + (((int(str(y).split(", ")[0].split(",")[1])) - int(
                         str(y).split(", ")[0].split(",")[0])) / 2).__ceil__()
                     FILESYSTEM.pop(temp)
-                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]))):
+                    update_eof()
+                    for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1])):
                         print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
+
                     print()
                 case '/f':
                     FILESYSTEM.pop(int(str(y).split(",")[0]))
-                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]))):
+                    update_eof()
+                    for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1])):
                         print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
                     print()
 
@@ -119,17 +134,192 @@ def delete_block(file, arg):
                                                                                                                     "") + "."
                     FILESYSTEM.pop(int(str(y).split(",")[1]) - 1)
                     FILESYSTEM.insert(int(str(y).split(",")[1]) - 1, [temp])
-
-                    for z in range(int(str(y).split(",")[0]), (int(str(y).split(",")[1]))):
+                    update_eof()
+                    for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1])):
                         print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
+
                     print()
+            break
         count += 1
+
+
+def append_block(file, args, parameter):
+    # noinspection PyShadowingNames
+    def update_filesystem():
+        eof = []
+        temp = []
+        for x, y in enumerate(FILESYSTEM):
+            if str(y).count(".") == 1:
+                eof.append(x)
+                temp.append(x + 1)
+        temp.pop(len(temp) - 1)
+
+        DIRECTORY.clear()
+        DIRECTORY.append(["A", "0," + str(eof[0])])
+        DIRECTORY.append(["B", str(temp[0]) + "," + str(eof[1])])
+        DIRECTORY.append(["C", str(temp[1]) + "," + str(eof[2])])
+
+    if int(len(FILESYSTEM)) >= 29:
+        print("No Available Space")
+        return
+
+    match args:
+        case "/f":
+            match file:
+                case "a":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            FILESYSTEM.insert(int(str(y).split(",")[0]), [parameter])
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[0][1]).split(",")[0]),
+                                           int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            break
+                case "b":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            FILESYSTEM.insert(int(str(y).split(",")[0]), [parameter])
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                           int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            break
+                case "c":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            FILESYSTEM.insert(int(str(y).split(",")[0]), [parameter])
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                           int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            break
+        case "/m":
+            match file:
+                case "a":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            midpoint = ((int(str(DIRECTORY[0][1]).split(",")[1]) - int(
+                                str(DIRECTORY[0][1]).split(",")[0])) / 2).__ceil__()
+                            FILESYSTEM.insert(midpoint, [parameter])
+                            update_filesystem()
+                            break
+                case "b":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            midpoint = (((int(str(DIRECTORY[1][1]).split(",")[1]) - int(
+                                str(DIRECTORY[1][1]).split(",")[0])) / 2).__ceil__()) + int(
+                                str(DIRECTORY[1][1]).split(",")[0])
+                            print(midpoint)
+                            FILESYSTEM.insert(midpoint, [parameter])
+                            update_filesystem()
+                            break
+                case "c":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            midpoint = (((int(str(DIRECTORY[2][1]).split(",")[1]) - int(
+                                str(DIRECTORY[2][1]).split(",")[0])) / 2).__ceil__()) + int(
+                                str(DIRECTORY[2][1]).split(",")[0])
+                            print(midpoint)
+                            FILESYSTEM.insert(midpoint, [parameter])
+                            update_filesystem()
+                            break
+
+        case "/b":
+            match file:
+                case "a":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            temp = str(FILESYSTEM[int(str(y).split(",")[1])])
+                            temp = temp.replace("'", "").replace(".", "").replace("[", "").replace("]", "")
+                            FILESYSTEM.pop(int(str(y).split(",")[1]))
+                            if len(temp) < 8:
+                                temp = temp + parameter + "."
+                                a = ""
+                                inside_counter = 0
+                                for count, z in enumerate(temp):
+                                    if count % 8 == 0 and a != "":
+                                        FILESYSTEM.insert(int(str(y).split(",")[1]) + inside_counter, [a])
+                                        inside_counter += 1
+                                        a = ""
+                                    a = a + z
+                                FILESYSTEM.insert(int(str(y).split(",")[1]) + inside_counter, [a])
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[0][1]).split(",")[0]),
+                                           int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            break
+
+                case "b":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            temp = str(FILESYSTEM[int(str(y).split(",")[1])])
+                            temp = temp.replace("'", "").replace(".", "").replace("[", "").replace("]", "")
+                            FILESYSTEM.pop(int(str(y).split(",")[1]))
+                            FILESYSTEM.insert(int(str(y).split(",")[1]), [temp])
+                            a = ""
+                            inner_counter = 1
+                            for count, z in enumerate(parameter):
+                                if count % 8 == 0 and a != "":
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
+                                    inner_counter += 1
+                                    a = ""
+                                a += z
+
+                            if len(a) < 7:
+                                if a[len(a) - 1] == ".":
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
+                                else:
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a + "."])
+                            else:
+                                FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
+                                if a[len(a) - 1] != ".":
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter + 1, ["."])
+
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                           int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+
+                            break
+
+                case "c":
+                    print(FILESYSTEM)
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            temp = str(FILESYSTEM[int(str(y).split(",")[1])])
+                            temp = temp.replace("'", "").replace(".", "").replace("[", "").replace("]", "")
+                            FILESYSTEM.pop(int(str(y).split(",")[1]))
+                            FILESYSTEM.insert(int(str(y).split(",")[1]), [temp])
+                            a = ""
+                            inner_counter = 1
+                            for count, z in enumerate(parameter):
+                                if count % 8 == 0 and a != "":
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
+                                    inner_counter += 1
+                                    a = ""
+                                a += z
+
+                            if len(a) < 7:
+                                if a[len(a) - 1] == ".":
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
+                                else:
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a + "."])
+                            else:
+                                FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
+                                if a[len(a) - 1] != ".":
+                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter + 1, ["."])
+
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                           int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+
+                            break
 
 
 def menu():
     file_innit()
     while 1:
-
         choice = input().casefold()
         if choice == 'help':
             tb.banner("  Commands : HELP, SIZE, [READ, DEL, APP] + optional -f (front) -m (middle) -b (back) ")
@@ -175,9 +365,9 @@ def menu():
 
             case "app":
                 try:
-                    print(choice.split(" ")[1])
+                    append_block(choice.split(" ")[2].casefold(), choice.split(" ")[1].casefold(), choice.split(" ")[3])
                 except IndexError:
-                    print(choice.split(" ")[0])
+                    print("Invalid Command")
 
 
 menu()
