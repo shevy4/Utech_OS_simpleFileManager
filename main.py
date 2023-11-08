@@ -1,4 +1,6 @@
 import tableprint as tb
+import tqdm
+from time import sleep
 
 # Define constants
 FILESYSTEM = []
@@ -169,25 +171,132 @@ def append_block(file, args, parameter):
                 case "a":
                     for x, y in DIRECTORY:
                         if file.upper() == x:
-                            FILESYSTEM.insert(int(str(y).split(",")[0]), [parameter])
+                            a = ""
+                            temp = parameter
+                            inner_counter = 1
+                            for count, w in enumerate(FILESYSTEM):
+                                temp = temp + str(w).replace("[", "").replace("]", "").replace("'", "")
+                                if str(w).count(".") == 1:
+                                    for count2 in range(count + 1):
+                                        FILESYSTEM.pop(0)
+                                    break
+                            parameter = temp
+                            for count, z in enumerate(parameter):
+                                if int(len(FILESYSTEM)) >= 30:
+                                    print("Space Unavailable")
+                                    update_filesystem()
+                                    return
+
+                                if count == 8:
+                                    FILESYSTEM.insert(int(str(y).split(",")[0]), [a])
+                                    a = ""
+                                elif count % 8 == 0 and count != 0:
+                                    FILESYSTEM.insert(int(str(y).split(",")[0]) + inner_counter, [a])
+                                    a = ""
+                                    inner_counter += 1
+                                a = a + z
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File A %s" % t)
+
+                            if a[int(len(a)) - 1] == ".":
+                                a = a.replace(".", "")
+                            if len(parameter) < 8:
+                                FILESYSTEM.insert(int(str(y).split(",")[0]), [a])
+                            else:
+                                FILESYSTEM.insert(int(str(y).split(",")[0]) + inner_counter, [a + "."])
                             update_filesystem()
                             for z in range(int(str(DIRECTORY[0][1]).split(",")[0]),
                                            int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
                                 print(z + 1, ":", FILESYSTEM[z], end=" ")
                             break
+
                 case "b":
                     for x, y in DIRECTORY:
                         if file.upper() == x:
-                            FILESYSTEM.insert(int(str(y).split(",")[0]), [parameter])
+                            a = ""
+                            temp = parameter
+                            inner_counter = 1
+                            for count in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                               int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                               int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[1][1]).split(",")[0]))
+                            parameter = temp
+                            for count, z in enumerate(parameter):
+                                if int(len(FILESYSTEM)) >= 30:
+                                    print("Space Unavailable")
+                                    update_filesystem()
+                                    return
+
+                                if count == 8:
+                                    FILESYSTEM.insert(int(str(DIRECTORY[1][1]).split(",")[0]), [a])
+                                    a = ""
+                                elif count % 8 == 0 and count != 0:
+                                    FILESYSTEM.insert(int(str(DIRECTORY[1][1]).split(",")[0]) + inner_counter, [a])
+                                    a = ""
+                                    inner_counter += 1
+                                a = a + z
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File B %s" % t)
+
+                            if a[int(len(a)) - 1] == ".":
+                                a = a.replace(".", "")
+                            if len(parameter) < 8:
+                                FILESYSTEM.insert(int(str(DIRECTORY[1][1]).split(",")[0]), [a])
+                            else:
+                                FILESYSTEM.insert(int(str(DIRECTORY[1][1]).split(",")[0]) + inner_counter, [a + "."])
                             update_filesystem()
                             for z in range(int(str(DIRECTORY[1][1]).split(",")[0]),
                                            int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
                                 print(z + 1, ":", FILESYSTEM[z], end=" ")
                             break
+
                 case "c":
                     for x, y in DIRECTORY:
                         if file.upper() == x:
-                            FILESYSTEM.insert(int(str(y).split(",")[0]), [parameter])
+                            a = ""
+                            temp = parameter
+                            inner_counter = 1
+                            for count in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                               int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                               int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[2][1]).split(",")[0]))
+                            parameter = temp
+                            for count, z in enumerate(parameter):
+                                if int(len(FILESYSTEM)) >= 30:
+                                    print("Space Unavailable")
+                                    update_filesystem()
+                                    return
+
+                                if count == 8:
+                                    FILESYSTEM.insert(int(str(DIRECTORY[2][1]).split(",")[0]), [a])
+                                    a = ""
+                                elif count % 8 == 0 and count != 0:
+                                    FILESYSTEM.insert(int(str(DIRECTORY[2][1]).split(",")[0]) + inner_counter, [a])
+                                    a = ""
+                                    inner_counter += 1
+                                a = a + z
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File C %s" % t)
+
+                            if a[int(len(a)) - 1] == ".":
+                                a = a.replace(".", "")
+                            if len(parameter) < 8:
+                                FILESYSTEM.insert(int(str(DIRECTORY[2][1]).split(",")[0]), [a])
+                            else:
+                                FILESYSTEM.insert(int(str(DIRECTORY[2][1]).split(",")[0]) + inner_counter, [a + "."])
                             update_filesystem()
                             for z in range(int(str(DIRECTORY[2][1]).split(",")[0]),
                                            int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
@@ -198,129 +307,57 @@ def append_block(file, args, parameter):
                 case "a":
                     for x, y in DIRECTORY:
                         if file.upper() == x:
-                            midpoint = ((int(str(DIRECTORY[0][1]).split(",")[1]) - int(
-                                str(DIRECTORY[0][1]).split(",")[0])) / 2).__ceil__()
-                            FILESYSTEM.insert(midpoint, [parameter])
-                            update_filesystem()
-                            break
-                case "b":
-                    for x, y in DIRECTORY:
-                        if file.upper() == x:
-                            midpoint = (((int(str(DIRECTORY[1][1]).split(",")[1]) - int(
-                                str(DIRECTORY[1][1]).split(",")[0])) / 2).__ceil__()) + int(
-                                str(DIRECTORY[1][1]).split(",")[0])
-                            print(midpoint)
-                            FILESYSTEM.insert(midpoint, [parameter])
-                            update_filesystem()
-                            break
-                case "c":
-                    for x, y in DIRECTORY:
-                        if file.upper() == x:
-                            midpoint = (((int(str(DIRECTORY[2][1]).split(",")[1]) - int(
-                                str(DIRECTORY[2][1]).split(",")[0])) / 2).__ceil__()) + int(
-                                str(DIRECTORY[2][1]).split(",")[0])
-                            print(midpoint)
-                            FILESYSTEM.insert(midpoint, [parameter])
-                            update_filesystem()
-                            break
+                            a = ""
+                            temp = ""
+                            inner_counter = 1
+                            for count in range(int(str(DIRECTORY[0][1]).split(",")[0]),
+                                               int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[0][1]).split(",")[0]),
+                                               int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[0][1]).split(",")[0]))
+                            # print(FILESYSTEM[((int(str(DIRECTORY[0][1]).split(",")[1]) - int(str(DIRECTORY[0][1]).split(",")[0])) / 2).__ceil__()])
+                            temp2 = []
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and a != "":
+                                    temp2.append([a])
+                                    a = ""
+                                a = a + z
+                            temp2.append([a])
+                            temp2.insert((int(len(temp2)) / 2).__ceil__(), [parameter])
+                            temp = ""
+                            for count in temp2:
+                                temp = temp + str(count).replace("[", "").replace("]", "").replace("'", "")
+                            inner_counter = 0
+                            temp2 = ""
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and temp2 != "":
+                                    FILESYSTEM.insert(inner_counter, [temp2])
+                                    inner_counter += 1
+                                    temp2 = ""
+                                temp2 = temp2 + z
 
-        case "/b":
-            match file:
-                case "a":
-                    for x, y in DIRECTORY:
-                        if file.upper() == x:
-                            temp = str(FILESYSTEM[int(str(y).split(",")[1])])
-                            temp = temp.replace("'", "").replace(".", "").replace("[", "").replace("]", "")
-                            FILESYSTEM.pop(int(str(y).split(",")[1]))
-                            if len(temp) < 8:
-                                temp = temp + parameter + "."
-                                a = ""
-                                inside_counter = 0
-                                for count, z in enumerate(temp):
-                                    if count % 8 == 0 and a != "":
-                                        FILESYSTEM.insert(int(str(y).split(",")[1]) + inside_counter, [a])
-                                        inside_counter += 1
-                                        a = ""
-                                    a = a + z
-                                FILESYSTEM.insert(int(str(y).split(",")[1]) + inside_counter, [a])
+                            if temp2 != "":
+                                FILESYSTEM.insert(inner_counter, [temp2])
+                                temp2 = ""
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File A %s" % t)
+
                             update_filesystem()
                             for z in range(int(str(DIRECTORY[0][1]).split(",")[0]),
                                            int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
                                 print(z + 1, ":", FILESYSTEM[z], end=" ")
                             break
 
-                case "b":
-                    for x, y in DIRECTORY:
-                        if file.upper() == x:
-                            temp = str(FILESYSTEM[int(str(y).split(",")[1])])
-                            temp = temp.replace("'", "").replace(".", "").replace("[", "").replace("]", "")
-                            FILESYSTEM.pop(int(str(y).split(",")[1]))
-                            FILESYSTEM.insert(int(str(y).split(",")[1]), [temp])
-                            a = ""
-                            inner_counter = 1
-                            for count, z in enumerate(parameter):
-                                if count % 8 == 0 and a != "":
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
-                                    inner_counter += 1
-                                    a = ""
-                                a += z
-
-                            if len(a) < 7:
-                                if a[len(a) - 1] == ".":
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
-                                else:
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a + "."])
-                            else:
-                                FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
-                                if a[len(a) - 1] != ".":
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter + 1, ["."])
-
-                            update_filesystem()
-                            for z in range(int(str(DIRECTORY[1][1]).split(",")[0]),
-                                           int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
-                                print(z + 1, ":", FILESYSTEM[z], end=" ")
-
-                            break
-
-                case "c":
-                    print(FILESYSTEM)
-                    for x, y in DIRECTORY:
-                        if file.upper() == x:
-                            temp = str(FILESYSTEM[int(str(y).split(",")[1])])
-                            temp = temp.replace("'", "").replace(".", "").replace("[", "").replace("]", "")
-                            FILESYSTEM.pop(int(str(y).split(",")[1]))
-                            FILESYSTEM.insert(int(str(y).split(",")[1]), [temp])
-                            a = ""
-                            inner_counter = 1
-                            for count, z in enumerate(parameter):
-                                if count % 8 == 0 and a != "":
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
-                                    inner_counter += 1
-                                    a = ""
-                                a += z
-
-                            if len(a) < 7:
-                                if a[len(a) - 1] == ".":
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
-                                else:
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a + "."])
-                            else:
-                                FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter, [a])
-                                if a[len(a) - 1] != ".":
-                                    FILESYSTEM.insert(int(str(y).split(",")[1]) + inner_counter + 1, ["."])
-
-                            update_filesystem()
-                            for z in range(int(str(DIRECTORY[2][1]).split(",")[0]),
-                                           int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
-                                print(z + 1, ":", FILESYSTEM[z], end=" ")
-
-                            break
-
 
 def menu():
     file_innit()
     while 1:
-        choice = input().casefold()
+        # choice = input().casefold()
+        choice = "app"
         if choice == 'help':
             tb.banner("  Commands : HELP, SIZE, [READ, DEL, APP] + optional -f (front) -m (middle) -b (back) ")
             continue
@@ -365,7 +402,15 @@ def menu():
 
             case "app":
                 try:
-                    append_block(choice.split(" ")[2].casefold(), choice.split(" ")[1].casefold(), choice.split(" ")[3])
+                    ''' temp = ""
+                    for x in range(3, len(choice.split(" "))):
+                        if x == 3:
+                            temp = choice.split(" ")[x]
+                            continue
+                        temp = temp + " " + choice.split(" ")[x]
+                        '''
+                    # append_block(choice.split(" ")[2].casefold(), choice.split(" ")[1].casefold(), temp)
+                    append_block("a", "/m", input())
                 except IndexError:
                     print("Invalid Command")
 
