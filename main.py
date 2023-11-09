@@ -71,18 +71,20 @@ def read_file(file, arg):
 
     for x, y in DIRECTORY:
         if x == file.upper():
+            print("File ", file, ": ", end="")
             if arg == "":
                 for z in range(int(str(y).split(",")[0]), int(str(y).split(",")[1]) + 1):
-                    print(FILESYSTEM[z])
+                    print(str(FILESYSTEM[z]).replace("[","").replace("]","").replace("'",""), end="")
+                print()
             else:
                 match arg.casefold():
                     case '/m':
-                        print(FILESYSTEM[(int(str(y).split(",")[0])) + (
-                                ((int(str(y).split(",")[1])) - ((int(str(y).split(",")[0])) - 1)) / 2).__floor__()])
+                        print(str(FILESYSTEM[(int(str(y).split(",")[0])) + (
+                                ((int(str(y).split(",")[1])) - ((int(str(y).split(",")[0])) - 1)) / 2).__floor__()]).replace("[","").replace("]","").replace("'",""))
                     case '/f':
-                        print(FILESYSTEM[int(str(y).split(",")[0])])
+                        print(str(FILESYSTEM[int(str(y).split(",")[0])]).replace("[","").replace("]","").replace("'",""))
                     case '/b':
-                        print(FILESYSTEM[int(str(y).split(",")[1])])
+                        print(str(FILESYSTEM[int(str(y).split(",")[1])]).replace("[","").replace("]","").replace("'",""))
 
             return
     print("File Not Found Or Incorrect Parameters")
