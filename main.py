@@ -66,6 +66,9 @@ def get_size(file):
 
 
 def read_file(file, arg):
+    if len(FILESYSTEM) == 0:
+        print("Error, File Empty")
+
     for x, y in DIRECTORY:
         if x == file.upper():
             if arg == "":
@@ -106,6 +109,10 @@ def delete_block(file, arg):
         print("File Not Found Or Incorrect Parameters")
         return
 
+    if len(FILESYSTEM) == 0:
+        print("Error, File Empty")
+        return
+
     for x, y in DIRECTORY:
         if x == file.upper():
             print("File", file, "before : ", end="")
@@ -141,6 +148,7 @@ def delete_block(file, arg):
                         print(str(FILESYSTEM[z]).replace("[", "").replace("'", "").replace("]", ""), end="")
 
                     print()
+            print(FILESYSTEM)
             break
         count += 1
 
@@ -211,6 +219,7 @@ def append_block(file, args, parameter):
                             for z in range(int(str(DIRECTORY[0][1]).split(",")[0]),
                                            int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
                                 print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
                             break
 
                 case "b":
@@ -256,6 +265,7 @@ def append_block(file, args, parameter):
                             for z in range(int(str(DIRECTORY[1][1]).split(",")[0]),
                                            int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
                                 print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
                             break
 
                 case "c":
@@ -301,6 +311,7 @@ def append_block(file, args, parameter):
                             for z in range(int(str(DIRECTORY[2][1]).split(",")[0]),
                                            int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
                                 print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
                             break
         case "/m":
             match file:
@@ -309,7 +320,6 @@ def append_block(file, args, parameter):
                         if file.upper() == x:
                             a = ""
                             temp = ""
-                            inner_counter = 1
                             for count in range(int(str(DIRECTORY[0][1]).split(",")[0]),
                                                int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
                                 temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
@@ -339,7 +349,6 @@ def append_block(file, args, parameter):
 
                             if temp2 != "":
                                 FILESYSTEM.insert(inner_counter, [temp2])
-                                temp2 = ""
 
                             pbar = tqdm.tqdm(FILESYSTEM)
                             for t in pbar:
@@ -350,31 +359,287 @@ def append_block(file, args, parameter):
                             for z in range(int(str(DIRECTORY[0][1]).split(",")[0]),
                                            int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
                                 print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
+                            break
+
+                case "b":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            a = ""
+                            temp = ""
+                            for count in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                               int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                               int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[1][1]).split(",")[0]))
+                            # print(FILESYSTEM[((int(str(DIRECTORY[0][1]).split(",")[1]) - int(str(DIRECTORY[0][1]).split(",")[0])) / 2).__ceil__()])
+                            temp2 = []
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and a != "":
+                                    temp2.append([a])
+                                    a = ""
+                                a = a + z
+                            temp2.append([a])
+                            temp2.insert((int(len(temp2)) / 2).__ceil__(), [parameter])
+                            temp = ""
+                            eof = []
+                            for count, z in enumerate(FILESYSTEM):
+                                if str(z).count(".") == 1:
+                                    eof.append(count)
+                            for count in temp2:
+                                temp = temp + str(count).replace("[", "").replace("]", "").replace("'", "")
+                            inner_counter = int(eof[0]) + 1
+                            temp2 = ""
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and temp2 != "":
+                                    FILESYSTEM.insert(inner_counter, [temp2])
+                                    inner_counter += 1
+                                    temp2 = ""
+                                temp2 = temp2 + z
+
+                            if temp2 != "":
+                                FILESYSTEM.insert(inner_counter, [temp2])
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File B %s" % t)
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                           int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
+                            break
+
+                case "c":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            a = ""
+                            temp = ""
+                            for count in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                               int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                               int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[2][1]).split(",")[0]))
+                            # print(FILESYSTEM[((int(str(DIRECTORY[0][1]).split(",")[1]) - int(str(DIRECTORY[0][1]).split(",")[0])) / 2).__ceil__()])
+                            temp2 = []
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and a != "":
+                                    temp2.append([a])
+                                    a = ""
+                                a = a + z
+                            temp2.append([a])
+                            temp2.insert(((int(len(temp2)) / 2).__ceil__()) - 1, [parameter])
+                            temp = ""
+                            eof = []
+                            for count, z in enumerate(FILESYSTEM):
+                                if str(z).count(".") == 1:
+                                    eof.append(count)
+                            for count in temp2:
+                                temp = temp + str(count).replace("[", "").replace("]", "").replace("'", "")
+                            inner_counter = int(eof[1]) + 1
+                            temp2 = ""
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and temp2 != "":
+                                    FILESYSTEM.insert(inner_counter, [temp2])
+                                    inner_counter += 1
+                                    temp2 = ""
+                                temp2 = temp2 + z
+
+                            if temp2 != "":
+                                FILESYSTEM.insert(inner_counter, [temp2])
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File C %s" % t)
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                           int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
+                            break
+
+        case "/b":
+            match file:
+                case "a":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            a = ""
+                            temp = ""
+                            for count in range(int(str(DIRECTORY[0][1]).split(",")[0]),
+                                               int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[0][1]).split(",")[0]),
+                                               int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[0][1]).split(",")[0]))
+                            temp2 = []
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and a != "":
+                                    temp2.append([a])
+                                    a = ""
+                                a = a + z
+                            if a[int(len(a)) - 1].count(".") == 1:
+                                a = a.replace(".", "")
+                            temp2.append([a])
+                            temp2.insert(len(temp2), [parameter + "."])
+                            temp = ""
+                            for count in temp2:
+                                temp = temp + str(count).replace("[", "").replace("]", "").replace("'", "")
+                            inner_counter = 0
+                            temp2 = ""
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and temp2 != "":
+                                    FILESYSTEM.insert(inner_counter, [temp2])
+                                    inner_counter += 1
+                                    temp2 = ""
+                                temp2 = temp2 + z
+
+                            if temp2 != "":
+                                FILESYSTEM.insert(inner_counter, [temp2])
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File A %s" % t)
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[0][1]).split(",")[0]),
+                                           int(str(DIRECTORY[0][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
+                            break
+
+                case "b":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            a = ""
+                            temp = ""
+                            for count in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                               int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                               int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[1][1]).split(",")[0]))
+                            temp2 = []
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and a != "":
+                                    temp2.append([a])
+                                    a = ""
+                                a = a + z
+                            if a[int(len(a)) - 1].count(".") == 1:
+                                a = a.replace(".", "")
+                            temp2.append([a])
+                            temp2.insert(len(temp2), [parameter + "."])
+                            temp = ""
+                            eof = []
+                            for count, z in enumerate(FILESYSTEM):
+                                if str(z).count(".") == 1:
+                                    eof.append(count)
+                            for count in temp2:
+                                temp = temp + str(count).replace("[", "").replace("]", "").replace("'", "")
+                            inner_counter = int(eof[0] + 1)
+                            temp2 = ""
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and temp2 != "":
+                                    FILESYSTEM.insert(inner_counter, [temp2])
+                                    inner_counter += 1
+                                    temp2 = ""
+                                temp2 = temp2 + z
+
+                            if temp2 != "":
+                                FILESYSTEM.insert(inner_counter, [temp2])
+
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File B %s" % t)
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[1][1]).split(",")[0]),
+                                           int(str(DIRECTORY[1][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
+                            break
+
+                case "c":
+                    for x, y in DIRECTORY:
+                        if file.upper() == x:
+                            a = ""
+                            temp = ""
+                            for count in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                               int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                temp = temp + str(FILESYSTEM[count]).replace("[", "").replace("]", "").replace("'", "")
+                            for count in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                               int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                FILESYSTEM.pop(int(str(DIRECTORY[2][1]).split(",")[0]))
+                            temp2 = []
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and a != "":
+                                    temp2.append([a])
+                                    a = ""
+                                a = a + z
+                            if a[int(len(a)) - 1].count(".") == 1:
+                                a = a.replace(".", "")
+                            temp2.append([a])
+                            temp2.insert(len(temp2), [parameter + "."])
+                            temp = ""
+                            eof = []
+                            for count, z in enumerate(FILESYSTEM):
+                                if str(z).count(".") == 1:
+                                    eof.append(count)
+                            for count in temp2:
+                                temp = temp + str(count).replace("[", "").replace("]", "").replace("'", "")
+                            inner_counter = int(eof[1] + 1)
+                            temp2 = ""
+                            for count, z in enumerate(temp):
+                                if count % 8 == 0 and temp2 != "":
+                                    FILESYSTEM.insert(inner_counter, [temp2])
+                                    inner_counter += 1
+                                    temp2 = ""
+                                temp2 = temp2 + z
+
+                            if temp2 != "":
+                                FILESYSTEM.insert(inner_counter, [temp2])
+                            pbar = tqdm.tqdm(FILESYSTEM)
+                            for t in pbar:
+                                sleep(.1)
+                                pbar.set_description("Appending To File C %s" % t)
+                            update_filesystem()
+                            for z in range(int(str(DIRECTORY[2][1]).split(",")[0]),
+                                           int(str(DIRECTORY[2][1]).split(",")[1]) + 1):
+                                print(z + 1, ":", FILESYSTEM[z], end=" ")
+                            print()
                             break
 
 
 def menu():
+    tb.banner("Type Command Or /exit to exit  ")
     file_innit()
     while 1:
-        # choice = input().casefold()
-        choice = "app"
+        choice = input().casefold()
+        # choice = "app"
         if choice == 'help':
-            tb.banner("  Commands : HELP, SIZE, [READ, DEL, APP] + optional -f (front) -m (middle) -b (back) ")
+            tb.banner("/f (front) /m (middle) /b (back) {FileName} ")
+            headers = ["Commands ", " Example"]
+            data = [["Size ", "Size /f a"], ["Read ", "Read /m b"], ["Del ", "Del /b c"], ["App ", "app /f a test"]]
+            tb.table(data, headers)
             continue
 
         match choice.split(" ")[0]:
             case "help":
                 match choice.split(" ")[1]:
                     case "app":
-                        print("Allows the user to append a word at the front, middle, or back")
+                        tb.banner("Allows the user to append a word at the front, middle, or back")
                     case "size":
-                        print("Typed alone will specify the total blocks used in the system, otherwise, it will "
-                              "display the number of characters in the given file")
+                        tb.banner("Typed alone will specify the total blocks used in the system, otherwise, it will "
+                                  "display the number of characters in the given file")
                     case "del":
-                        print("Allows the user to delete a character at the front, middle, or back of a file")
+                        tb.banner("Allows the user to delete a character at the front, middle, or back of a file")
                     case "read":
-                        print("Allows the user to read all contents of a file or a specific character at the front, "
-                              "middle, or back")
+                        tb.banner(
+                            "Allows the user to read all contents of a file or a specific character at the front, "
+                            "middle, or back")
             case "size":
                 try:
                     get_size(choice.split(" ")[1])
@@ -402,17 +667,22 @@ def menu():
 
             case "app":
                 try:
-                    ''' temp = ""
+                    temp = ""
                     for x in range(3, len(choice.split(" "))):
                         if x == 3:
                             temp = choice.split(" ")[x]
                             continue
                         temp = temp + " " + choice.split(" ")[x]
-                        '''
-                    # append_block(choice.split(" ")[2].casefold(), choice.split(" ")[1].casefold(), temp)
-                    append_block("a", "/m", input())
+                    append_block(choice.split(" ")[2].casefold(), choice.split(" ")[1].casefold(), temp)
+                    # append_block("c", "/b", input())
                 except IndexError:
                     print("Invalid Command")
+
+            case "/exit":
+                exit(0)
+
+            case _:
+                print("Invalid Command")
 
 
 menu()
